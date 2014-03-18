@@ -13,8 +13,8 @@ class Series
 
   index({slug: 1}, {unique: true, name: "slug_index"})
 
-  validates :slug, presence: true, uniqueness: true
-  validates :title, presence: true
-  validates :frequency, inclusion: {in: ["annualy", "monthly", "weekly"]}
-  validates :language, inclusion: {in: ["english"]}
+  #validates :slug, presence: true, uniqueness: true
+  #validates :title, presence: true
+  #validates :release_frequency, inclusion: {in: ["annualy", "monthly", "weekly"]}
+  #validates :language, inclusion: {in: ["english"]}
 end

@@ -9,7 +9,7 @@ class Release
   has_many :datasets
   
 #  validates :slug, presence: true, uniqueness: true, slug: true  
-  validates :title, presence: true
+#  validates :title, presence: true
 
   def previous_release
     # find previous published release

@@ -18,6 +18,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "mongoid", "~> 3.1"
   gem.add_dependency "mime-types", "~> 1.16"
   
+  gem.add_development_dependency "database_cleaner", "1.2.0"
   gem.add_development_dependency "rake", "0.9.2.2"
   gem.add_development_dependency "shoulda-context", "1.0.0"
   

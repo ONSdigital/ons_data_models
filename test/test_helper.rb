@@ -8,5 +8,17 @@ require "minitest/autorun"
 
 require "mongoid"
 require "ons_data_models/require_all"
+require "database_cleaner"
 
 Mongoid.load! File.expand_path("../../config/mongoid.yml", __FILE__)
+
+DatabaseCleaner.strategy = :truncation
+# initial clean
+DatabaseCleaner.clean
+
+class ActiveSupport::TestCase
+  def clean_db
+    DatabaseCleaner.clean
+  end
+  set_callback :teardown, :before, :clean_db
+end
