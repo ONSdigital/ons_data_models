@@ -1,18 +1,22 @@
 FactoryGirl.define do
   factory :dataset do
-    slug "an-dataset"
-    structure what: "up"
+    sequence(:slug) { |s| "an-dataset-#{s}" }
+    after(:build) do |dataset|
+      dimension = FactoryGirl.create(:dimension)
+      concept_scheme = FactoryGirl.create(:concept_scheme)
+      dataset.structure = {dimension.id => concept_scheme.id}
+    end
   end
 
   factory :dimension do
-    slug "an-dimension"
+    sequence(:slug) { |s| "an-dimension-#{s}" }
     name "place"
     title "An Dimension Innit"
     dimension_type "stellar"
   end
 
   factory :concept_scheme do
-    slug "an-uk-concept-scheme"
+    sequence(:slug) { |s| "an-uk-concept-scheme-#{s}" }
     title "Galactic places"
     values "MM1" => "Mazteroid"
   end
