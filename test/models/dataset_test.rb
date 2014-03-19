@@ -5,8 +5,8 @@ class DatasetTest < ActiveSupport::TestCase
   context "with a dataset" do
 
     should "have a unique slug" do
-      dataset_1 = FactoryGirl.create(:dataset)
-      dataset_2 = FactoryGirl.build(:dataset)
+      dataset_1 = FactoryGirl.create(:dataset, {slug: "an-slug"})
+      dataset_2 = FactoryGirl.build(:dataset, {slug: "an-slug"})
       assert dataset_1.valid?
       assert dataset_2.valid? == false
     end

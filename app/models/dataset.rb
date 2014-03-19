@@ -9,4 +9,16 @@ class Dataset
 
   validates :slug, uniqueness: {scope: :release}
   validates :structure, presence: true
+  validate :structure_maps_dimensions_to_concepts
+
+  def structure_maps_dimensions_to_concepts
+    structure.each_pair do |key, value|
+      if Dimension.find(key).nil?
+        errors.add(:structure, "Unknown dimension")
+      end
+      if ConceptScheme.find(value).nil?
+        errors.add(:structure, "Unknown Concept Scheme")
+      end
+    end
+  end
 end
