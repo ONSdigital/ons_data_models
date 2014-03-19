@@ -9,6 +9,9 @@ require "minitest/autorun"
 require "mongoid"
 require "ons_data_models/require_all"
 require "database_cleaner"
+require "factory_girl"
+
+FactoryGirl.reload
 
 Mongoid.load! File.expand_path("../../config/mongoid.yml", __FILE__)
 

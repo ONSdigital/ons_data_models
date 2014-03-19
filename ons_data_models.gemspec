@@ -21,6 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "database_cleaner", "1.2.0"
   gem.add_development_dependency "rake", "0.9.2.2"
   gem.add_development_dependency "shoulda-context", "1.0.0"
+  gem.add_development_dependency "factory_girl", "4.4.0"
   
   # The following are added to help bundler resolve dependencies
   gem.add_development_dependency "rack", "~> 1.4.4"
