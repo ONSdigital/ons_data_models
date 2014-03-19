@@ -20,4 +20,10 @@ FactoryGirl.define do
     title "Galactic places"
     values "MM1" => "Mazteroid"
   end
+
+  factory :observation do
+    sequence(:slug) { |s| "a-observation-#{s}"}
+    measure 60.5
+    dataset
+  end
 end
