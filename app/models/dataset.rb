@@ -21,4 +21,9 @@ class Dataset
       end
     end
   end
+
+  def has_field?(field_name)
+    structure.map{|x| Dimension.find(x[0])}.any?{|x| x.name == field_name}
+  end
+
 end
