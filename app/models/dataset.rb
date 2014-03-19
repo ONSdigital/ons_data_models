@@ -2,10 +2,11 @@ class Dataset
   include Mongoid::Document
   field :title
   field :slug
+  field :structure, type: Hash
 
-  # skipping the relationship to series atm
-  # belongs_to :release
-
-  belongs_to :series
+  belongs_to :release
   has_many :observations
+
+  validates :slug, uniqueness: {scope: :release}
+  validates :structure, presence: true
 end
