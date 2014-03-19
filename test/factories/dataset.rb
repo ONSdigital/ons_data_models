@@ -10,4 +10,10 @@ FactoryGirl.define do
     title "An Dimension Innit"
     dimension_type "stellar"
   end
+
+  factory :concept_scheme do
+    slug "an-uk-concept-scheme"
+    title "Galactic places"
+    values "MM1" => "Mazteroid"
+  end
 end
