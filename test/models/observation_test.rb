@@ -6,8 +6,8 @@ class ObservationTest < ActiveSupport::TestCase
     should "have required fields" do
       observation = FactoryGirl.build(:observation, {slug: nil, dataset: nil})
       assert observation.valid? == false
-      assert observation.errors[:slug]
-      assert observation.errors[:dataset]
+      assert observation.errors[:slug].empty? == false
+      assert observation.errors[:dataset].empty? == false
     end
 
     should "have fields for dataset structure" do
@@ -25,6 +25,18 @@ class ObservationTest < ActiveSupport::TestCase
       assert_raise NoMethodError do
         observation.made_up_field = "WAT"
       end
+    end
+
+    should "validate that an assigned dimension value is from our concept scheme" do
+      observation = FactoryGirl.create(:observation)
+      observation.place = "MM1"
+      assert observation.valid?
+    end
+
+    should "raise a validation error for an assigned dimension not in concept scheme" do
+      observation = FactoryGirl.create(:observation)
+      observation.place = "NOPE"
+      assert observation.valid? == false
     end
   end
 end
