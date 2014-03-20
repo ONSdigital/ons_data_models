@@ -26,4 +26,8 @@ class Dataset
     structure.map{|x| Dimension.find(x[0])}.any?{|x| x.name == field_name}
   end
 
+  def concept_scheme_for_dimension(dimension_name)
+    dimension = structure.map{|x| Dimension.find(x[0])}.find{|x| x.name == dimension_name}
+    ConceptScheme.find(structure[dimension.id])
+  end
 end

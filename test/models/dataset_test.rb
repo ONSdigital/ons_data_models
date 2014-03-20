@@ -15,5 +15,11 @@ class DatasetTest < ActiveSupport::TestCase
       dataset_1 = FactoryGirl.create(:dataset)
       assert dataset_1.structure.is_a?Hash
     end
+
+    should "return a concept scheme for a given dimension name" do
+      dataset_1 = FactoryGirl.create(:dataset)
+      found_concept_scheme = dataset_1.concept_scheme_for_dimension("place")
+      assert_equal found_concept_scheme.title, "Galactic places"
+    end
   end
 end
