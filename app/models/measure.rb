@@ -1,9 +1,13 @@
 class Measure
   include Mongoid::Document
-  # may be able to define some types of measures
+  field :slug, type: String
   field :name, type: String
   field :title, type: String
-  field :value
+  field :description, type: String
 
-  embedded_in :observation
+  belongs_to :dataset
+
+  validates :slug, presence: true, uniqueness: {scope: :dataset}
+  validates :name, presence: true
+  validates :title, presence: true
 end

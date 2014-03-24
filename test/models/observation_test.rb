@@ -4,7 +4,7 @@ require "models/observation"
 class ObservationTest < ActiveSupport::TestCase
   context "with an observation" do
     should "have required fields" do
-      observation = FactoryGirl.build(:observation, {slug: nil, dataset: nil})
+      observation = FactoryGirl.build(:empty_observation)
       assert observation.valid? == false
       assert observation.errors[:slug].empty? == false
       assert observation.errors[:dataset].empty? == false
@@ -12,6 +12,7 @@ class ObservationTest < ActiveSupport::TestCase
 
     should "have fields for dataset dimensions" do
       observation = FactoryGirl.create(:observation)
+      puts observation.inspect
       # place comes from the dataset dimensions
       observation.place = "MM1"
       observation.save
@@ -57,6 +58,15 @@ class ObservationTest < ActiveSupport::TestCase
 
       assert observation.valid? == true
       assert observation.notes == "This observation is incredibly rare and pondered by many data scientists"
+    end
+
+    should "have measures assigned to it" do
+      observation = FactoryGirl.create(:observation)
+      observation.price_index = 111.5
+      observation.save
+
+      assert observation.valid? == true
+      assert observation.price_index == 111.5
     end
   end
 end

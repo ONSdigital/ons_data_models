@@ -1,7 +1,6 @@
 class Observation
   include Mongoid::Document
   field :slug, type: String
-  field :measure
 
   belongs_to :dataset
 
@@ -25,7 +24,7 @@ class Observation
     case method.to_s
     when /^([a-z0-9_]+)=?$/
       field_name = $1 
-      if dataset.has_field?(field_name)
+      if dataset && dataset.has_field?(field_name)
         class_eval { field field_name.to_sym }
         send method, *args
       else

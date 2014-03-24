@@ -41,5 +41,10 @@ class DatasetTest < ActiveSupport::TestCase
       dataset_1.save
       assert dataset_1.valid? == true
     end
+
+    should "have fields for measures" do
+      dataset = FactoryGirl.create(:dataset)
+      assert dataset.has_field?("price_index")
+    end
   end
 end
