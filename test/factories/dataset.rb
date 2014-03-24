@@ -1,6 +1,7 @@
 FactoryGirl.define do
   factory :dataset do
     sequence(:slug) { |s| "an-dataset-#{s}" }
+    data_attributes "provisional" => false
     after(:build) do |dataset|
       dimension = FactoryGirl.create(:dimension)
       concept_scheme = FactoryGirl.create(:concept_scheme)

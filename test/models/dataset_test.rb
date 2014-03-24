@@ -21,5 +21,12 @@ class DatasetTest < ActiveSupport::TestCase
       found_concept_scheme = dataset_1.concept_scheme_for_dimension("place")
       assert_equal found_concept_scheme.title, "Galactic places"
     end
+
+    should "have a data attributes hash" do
+      dataset_1 = FactoryGirl.create(:dataset)
+      puts dataset_1.data_attributes.inspect
+      puts "==="
+      assert dataset_1.data_attributes.is_a?Hash
+    end
   end
 end

@@ -3,6 +3,7 @@ class Dataset
   field :title
   field :slug
   field :structure, type: Hash
+  field :data_attributes, type: Hash
 
   belongs_to :release
   has_many :observations
