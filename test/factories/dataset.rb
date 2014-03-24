@@ -15,7 +15,7 @@ FactoryGirl.define do
           }
         }
       )
-      dataset.structure = {dimension.id => concept_scheme.id}
+      dataset.dimensions = {dimension.id => concept_scheme.id}
       dataset.data_attributes = {data_attribute.id => concept_scheme_2.id}
     end
   end

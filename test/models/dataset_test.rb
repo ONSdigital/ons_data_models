@@ -11,9 +11,9 @@ class DatasetTest < ActiveSupport::TestCase
       assert dataset_2.valid? == false
     end
 
-    should "have a structure hash" do
+    should "have a dimensions hash" do
       dataset_1 = FactoryGirl.create(:dataset)
-      assert dataset_1.structure.is_a?Hash
+      assert dataset_1.dimensions.is_a?Hash
     end
 
     should "return a concept scheme for a given dimension name" do

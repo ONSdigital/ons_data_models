@@ -2,24 +2,24 @@ class Dataset
   include Mongoid::Document
   field :title
   field :slug
-  field :structure, type: Hash
+  field :dimensions, type: Hash
   field :data_attributes, type: Hash
 
   belongs_to :release
   has_many :observations
 
   validates :slug, uniqueness: {scope: :release}
-  validates :structure, presence: true
-  validate :structure_maps_dimensions_to_concepts
+  validates :dimensions, presence: true
+  validate :dimensions_maps_dimensions_to_concepts
   validate :data_attributes_maps_to_concepts
 
-  def structure_maps_dimensions_to_concepts
-    structure.each_pair do |key, value|
+  def dimensions_maps_dimensions_to_concepts
+    dimensions.each_pair do |key, value|
       if Dimension.find(key).nil?
-        errors.add(:structure, "Unknown dimension")
+        errors.add(:dimensions, "Unknown dimension")
       end
       if ConceptScheme.find(value).nil?
-        errors.add(:structure, "Unknown Concept Scheme")
+        errors.add(:dimensions, "Unknown Concept Scheme")
       end
     end
   end
@@ -38,12 +38,12 @@ class Dataset
   end
 
   def has_field?(field_name)
-    structure.map{|x| Dimension.find(x[0])}.any?{|x| x.name == field_name}
+    dimensions.map{|x| Dimension.find(x[0])}.any?{|x| x.name == field_name}
   end
 
   def concept_scheme_for_dimension(dimension_name)
-    dimension = structure.map{|x| Dimension.find(x[0])}.find{|x| x.name == dimension_name}
-    ConceptScheme.find(structure[dimension.id])
+    dimension = dimensions.map{|x| Dimension.find(x[0])}.find{|x| x.name == dimension_name}
+    ConceptScheme.find(dimensions[dimension.id])
   end
 
   def concept_scheme_for_attribute(attribute_name)
