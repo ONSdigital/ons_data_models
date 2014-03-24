@@ -5,7 +5,18 @@ FactoryGirl.define do
     after(:build) do |dataset|
       dimension = FactoryGirl.create(:dimension)
       concept_scheme = FactoryGirl.create(:concept_scheme)
+      data_attribute = FactoryGirl.create(:data_attribute)
+      concept_scheme_2 = FactoryGirl.create(:concept_scheme,
+        {
+          title: "Provisional",
+          values: {
+            true: "data is provisional",
+            false: "data is for reals"
+          }
+        }
+      )
       dataset.structure = {dimension.id => concept_scheme.id}
+      dataset.data_attributes = {data_attribute.id => concept_scheme_2.id}
     end
   end
 
