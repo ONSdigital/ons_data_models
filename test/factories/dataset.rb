@@ -3,6 +3,7 @@ FactoryGirl.define do
     sequence(:slug) { |s| "an-dataset-#{s}" }
     data_attributes "provisional" => false
     after(:build) do |dataset|
+      FactoryGirl.create(:measure, {dataset: dataset})
       dimension = FactoryGirl.create(:dimension)
       concept_scheme = FactoryGirl.create(:concept_scheme)
       data_attribute = FactoryGirl.create(:data_attribute)
@@ -35,9 +36,13 @@ FactoryGirl.define do
 
   factory :observation do
     sequence(:slug) { |s| "a-observation-#{s}"}
-    measure 60.5
     dataset
+    price_index 111.5
   end
+
+  factory :empty_observation, class: Observation do
+  end
+
 
   factory :data_attribute do
     sequence(:slug) { |s| "an-attribute-#{s}" }
@@ -46,7 +51,7 @@ FactoryGirl.define do
   end
 
   factory :measure do
-    sequence(:slug) { |s| "an-measure" }
+    sequence(:slug) { |s| "an-measure-#{s}" }
     name "price_index"
     title "Price Index"
     description "A value based on a series of economic indicators and toads."
