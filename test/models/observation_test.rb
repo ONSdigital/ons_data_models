@@ -38,5 +38,25 @@ class ObservationTest < ActiveSupport::TestCase
       observation.place = "NOPE"
       assert observation.valid? == false
     end
+
+    should "validate that an assigned data attribute value is from valid concept scheme" do
+      observation = FactoryGirl.create(:observation)
+      observation.provisional = true
+      assert observation.valid? == true   
+    end
+
+    should "allow an assigned data attribute value to not have a concept scheme" do
+      observation = FactoryGirl.create(:observation)
+      data_attribute = FactoryGirl.create(:data_attribute, {name: "notes", title: "Notes"})
+      dataset = observation.dataset
+      dataset.data_attributes[data_attribute.id] = nil
+      dataset.save
+
+      observation.notes = "This observation is incredibly rare and pondered by many data scientists"
+      observation.save
+
+      assert observation.valid? == true
+      assert observation.notes == "This observation is incredibly rare and pondered by many data scientists"
+    end
   end
 end

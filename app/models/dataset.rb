@@ -38,7 +38,11 @@ class Dataset
   end
 
   def has_field?(field_name)
-    dimensions.map{|x| Dimension.find(x[0])}.any?{|x| x.name == field_name}
+    found_a_dimension = dimensions.map{|x| Dimension.find(x[0])}.any?{|x| x.name == field_name}
+    return found_a_dimension unless found_a_dimension == false
+
+    found_an_attribute = data_attributes.map{|x| DataAttribute.find(x[0])}.any?{|x| x.name == field_name}
+    return found_an_attribute
   end
 
   def concept_scheme_for_dimension(dimension_name)
