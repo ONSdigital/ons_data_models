@@ -27,4 +27,10 @@ FactoryGirl.define do
     measure 60.5
     dataset
   end
+
+  factory :data_attribute do
+    sequence(:slug) { |s| "an-attribute-#{s}" }
+    name "provisional"
+    title "Provisional"
+  end
 end
