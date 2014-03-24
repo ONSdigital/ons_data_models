@@ -44,4 +44,11 @@ FactoryGirl.define do
     name "provisional"
     title "Provisional"
   end
+
+  factory :measure do
+    sequence(:slug) { |s| "an-measure" }
+    name "price_index"
+    title "Price Index"
+    description "A value based on a series of economic indicators and toads."
+  end
 end
