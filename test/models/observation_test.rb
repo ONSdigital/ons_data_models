@@ -10,9 +10,9 @@ class ObservationTest < ActiveSupport::TestCase
       assert observation.errors[:dataset].empty? == false
     end
 
-    should "have fields for dataset structure" do
+    should "have fields for dataset dimensions" do
       observation = FactoryGirl.create(:observation)
-      # place comes from the dataset structure
+      # place comes from the dataset dimensions
       observation.place = "MM1"
       observation.save
       # reload from mongo
@@ -20,7 +20,7 @@ class ObservationTest < ActiveSupport::TestCase
       assert_equal "MM1", observation.place
     end
 
-    should "not accept fields that aren't in dataset structure" do
+    should "not accept fields that aren't in dataset dimensions" do
       observation = FactoryGirl.create(:observation)
       assert_raise NoMethodError do
         observation.made_up_field = "WAT"
@@ -37,6 +37,26 @@ class ObservationTest < ActiveSupport::TestCase
       observation = FactoryGirl.create(:observation)
       observation.place = "NOPE"
       assert observation.valid? == false
+    end
+
+    should "validate that an assigned data attribute value is from valid concept scheme" do
+      observation = FactoryGirl.create(:observation)
+      observation.provisional = true
+      assert observation.valid? == true   
+    end
+
+    should "allow an assigned data attribute value to not have a concept scheme" do
+      observation = FactoryGirl.create(:observation)
+      data_attribute = FactoryGirl.create(:data_attribute, {name: "notes", title: "Notes"})
+      dataset = observation.dataset
+      dataset.data_attributes[data_attribute.id] = nil
+      dataset.save
+
+      observation.notes = "This observation is incredibly rare and pondered by many data scientists"
+      observation.save
+
+      assert observation.valid? == true
+      assert observation.notes == "This observation is incredibly rare and pondered by many data scientists"
     end
   end
 end

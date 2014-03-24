@@ -10,7 +10,7 @@ class Observation
   validate :dimension_validator
   def dimension_validator
     return if dataset.nil?
-    dataset.structure.each_pair do |dimension_id, concept_scheme_id|
+    dataset.dimensions.each_pair do |dimension_id, concept_scheme_id|
       dimension_name = Dimension.find(dimension_id).name
       if respond_to? dimension_name
         concept_scheme = ConceptScheme.find(concept_scheme_id)
