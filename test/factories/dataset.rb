@@ -56,4 +56,12 @@ FactoryGirl.define do
     title "Price Index"
     description "A value based on a series of economic indicators and toads."
   end
+  
+  factory :release do
+    sequence(:slug) { |s| "a-release-#{s}" }
+    published "2014-04-01"
+    title "April Horse Index"
+    description "Horse price index"
+  end
+    
 end
