@@ -69,4 +69,18 @@ class ObservationTest < ActiveSupport::TestCase
       assert observation.price_index == 111.5
     end
   end
+
+  context "with many observations for a product" do
+    should "be able to find all observations across a time dimension" do
+      date_dataset = FactoryGirl.create(:date_dataset)
+      observation = FactoryGirl.create(:date_observation, {dataset: date_dataset})
+      puts observation.inspect
+      puts observation.dataset.inspect
+      assert observation.price_index == 60.5
+      assert observation.date == "JAN2014"
+      # factory create 3 observations for 1 product dimension across 3 time dimensions
+      # factory create 1 observation for 1 product dimension across a different dimension
+      # observation.get_all_with(dimension)
+    end
+  end
 end
