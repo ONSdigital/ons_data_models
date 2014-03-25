@@ -12,7 +12,6 @@ class ObservationTest < ActiveSupport::TestCase
 
     should "have fields for dataset dimensions" do
       observation = FactoryGirl.create(:observation)
-      puts observation.inspect
       # place comes from the dataset dimensions
       observation.place = "MM1"
       observation.save
@@ -70,14 +69,23 @@ class ObservationTest < ActiveSupport::TestCase
     end
   end
 
-  context "with many observations for a product" do
-    should "be able to find all observations across a time dimension" do
+  context "with many observations for a dataset" do
+    should "find all observations across a product dimension" do
       observation = FactoryGirl.create(:observation, {price_index: 60.5, product: "MC6A", date: "2014JAN"})
-      observation_dec = FactoryGirl.create(:observation, {price_index: 111.6, product: "MC6A", date: "2013DEC"})
-      observation_nov = FactoryGirl.create(:observation, {price_index: 110.9, product: "MC6A", date: "2013NOV"})
+      observation_dec = FactoryGirl.create(:observation, {dataset: observation.dataset, price_index: 111.6, product: "MC6A", date: "2013DEC"})
       assert_equal observation.date, "2014JAN"
       assert_equal observation.product, "MC6A"
-      # observation.get_all_with(dimension)
+      results = observation.get_all_with(["product"])
+      assert_equal results.count, 2
     end
+    should "find only observations within this dataset" do
+      observation = FactoryGirl.create(:observation, {price_index: 60.5, product: "MC6A", date: "2014JAN"})
+      observation_dec = FactoryGirl.create(:observation, {price_index: 111.6, product: "MC6A", date: "2013DEC"})
+      assert_equal observation.date, "2014JAN"
+      assert_equal observation.product, "MC6A"
+      results = observation.get_all_with(["product"])
+      assert_equal results.count, 1
+    end
+
   end
 end

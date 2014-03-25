@@ -41,10 +41,15 @@ FactoryGirl.define do
   factory :product_concept_scheme, class: ConceptScheme do
     sequence(:slug) { |s| "product-concept-scheme-#{s}"}
     title "PPI"
-    values "MC6A" => {
+    values {{"MC6A" => {
       "notation" => "MC6A",
       "title" => "7229110080: Alcoholic Beverages - SPECIAL INDEX FOR USE IN NSO - Manu incl duty"
-    }
+      },
+      "JU5C" => {
+        "notation" => "JU5C",
+        "title" => "1107000000:Soft drinks; mineral waters and other bottled waters"
+      }
+    }}
   end
 
   factory :date_dimension, class: Dimension do
