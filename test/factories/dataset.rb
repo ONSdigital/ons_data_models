@@ -1,20 +1,15 @@
 FactoryGirl.define do
   
-  factory :date_dataset, class: Dataset do
-    sequence(:slug) { |s| "has-dates-dataset-#{s}"}
-    after(:build) do |dataset|
-      FactoryGirl.create(:measure, {dataset: dataset})
-      dimension = FactoryGirl.create(:date_dimension)
-      concept_scheme = FactoryGirl.create(:date_concept_scheme)
-      dataset.dimensions = {dimension.id => concept_scheme.id}
-    end
-  end
-
   factory :dataset do
     sequence(:slug) { |s| "an-dataset-#{s}" }
     data_attributes "provisional" => false
     after(:build) do |dataset|
       FactoryGirl.create(:measure, {dataset: dataset})
+      date_dimension = FactoryGirl.create(:date_dimension)
+      date_concept_scheme = FactoryGirl.create(:date_concept_scheme)
+      product_dimension = FactoryGirl.create(:product_dimension)
+      product_concept_scheme = FactoryGirl.create(:product_concept_scheme)
+
       dimension = FactoryGirl.create(:dimension)
       concept_scheme = FactoryGirl.create(:concept_scheme)
       data_attribute = FactoryGirl.create(:data_attribute)
@@ -27,9 +22,29 @@ FactoryGirl.define do
           }
         }
       )
-      dataset.dimensions = {dimension.id => concept_scheme.id}
+      dataset.dimensions = {
+        dimension.id => concept_scheme.id,
+        date_dimension.id => date_concept_scheme.id,
+        product_dimension.id => product_concept_scheme.id
+      }
       dataset.data_attributes = {data_attribute.id => concept_scheme_2.id}
     end
+  end
+
+  factory :product_dimension, class: Dimension do
+    sequence(:slug) { |s| "product-dimension-#{s}" }
+    name "product"
+    title "Producer product"
+    dimension_type "product"
+  end
+
+  factory :product_concept_scheme, class: ConceptScheme do
+    sequence(:slug) { |s| "product-concept-scheme-#{s}"}
+    title "PPI"
+    values "MC6A" => {
+      "notation" => "MC6A",
+      "title" => "7229110080: Alcoholic Beverages - SPECIAL INDEX FOR USE IN NSO - Manu incl duty"
+    }
   end
 
   factory :date_dimension, class: Dimension do
@@ -76,14 +91,6 @@ FactoryGirl.define do
     sequence(:slug) { |s| "an-uk-concept-scheme-#{s}" }
     title "Galactic places"
     values "MM1" => "Mazteroid"
-  end
-
-  factory :date_observation, class: Observation do
-    sequence(:slug) { |s| "a-observation-#{s}"}
-    after(:build) do |obs|
-      obs.price_index 60.5
-      obs.date "2014JAN"
-    end
   end
 
   factory :observation do
