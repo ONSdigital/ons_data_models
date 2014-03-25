@@ -4,6 +4,7 @@ class Dataset
   field :slug
   field :dimensions, type: Hash
   field :data_attributes, type: Hash
+  field :description, type: String
 
   belongs_to :release
   has_many :observations
