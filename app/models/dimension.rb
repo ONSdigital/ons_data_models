@@ -3,6 +3,7 @@ class Dimension
   field :slug, type: String
   field :name, type: String
   field :title, type: String
+  field :description, type: String
   field :dimension_type
 
   validates :slug, presence: true, uniqueness: true

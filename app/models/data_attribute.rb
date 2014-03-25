@@ -3,6 +3,8 @@ class DataAttribute
   field :slug, type: String
   field :name, type: String
   field :title, type: String
+  field :description, type: String
+
   
   validates :slug, presence: true, uniqueness: true
   validates :name, presence: true
