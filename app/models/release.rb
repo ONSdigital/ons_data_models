@@ -3,8 +3,12 @@ class Release
   field :slug, type: String
   field :title, type: String
   field :published, type: DateTime
-  field :notes
-
+  field :notes, type: String
+  field :comments, type: String
+  field :state, type: String
+  
+  embeds_one :contact
+    
   belongs_to :series 
   has_many :datasets
   

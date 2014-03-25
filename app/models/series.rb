@@ -3,7 +3,9 @@ class Series
   field :slug, type: String
   field :title, type: String
   field :description, type: String
-
+  field :language, type: String
+  field :frequency, type: String
+  
   has_many :releases
 
   embeds_one :contact
