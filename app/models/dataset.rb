@@ -26,6 +26,7 @@ class Dataset
   end
 
   def data_attributes_maps_to_concepts
+    return if data_attributes.nil?
     data_attributes.each_pair do |key, value|
       if DataAttribute.find(key).nil?
         errors.add(:data_attributes, "Unknown data attribute")
@@ -42,11 +43,15 @@ class Dataset
     found_a_dimension = dimensions.map{|x| Dimension.find(x[0])}.any?{|x| x.name == field_name}
     return found_a_dimension unless found_a_dimension == false
 
-    found_an_attribute = data_attributes.map{|x| DataAttribute.find(x[0])}.any?{|x| x.name == field_name}
-    return found_an_attribute unless found_an_attribute == false
+    if !data_attributes.nil?
+      found_an_attribute = data_attributes.map{|x| DataAttribute.find(x[0])}.any?{|x| x.name == field_name}
+      return found_an_attribute unless found_an_attribute == false
+    end
 
-    found_an_measure = measures.where(name: field_name).first
-    return found_an_measure
+    if !measures.nil?
+      found_an_measure = measures.where(name: field_name).first
+      return found_an_measure
+    end
   end
 
   def concept_scheme_for_dimension(dimension_name)

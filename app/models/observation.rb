@@ -35,4 +35,10 @@ class Observation
     end
   end
 
+  def get_all_with(matching_dimensions)
+    where_clause = matching_dimensions.map { |x| [x.to_sym, send(x)]}
+    where_clause<<["dataset", dataset]
+    Observation.where(where_clause.to_h)
+  end
+
 end
