@@ -4,16 +4,17 @@ class Dataset
   field :slug
   field :dimensions, type: Hash
   field :data_attributes, type: Hash
+  field :measures, type: Hash
   field :description, type: String
 
   belongs_to :release
   has_many :observations
-  has_many :measures
 
   validates :slug, uniqueness: {scope: :release}
   validates :dimensions, presence: true
   validate :dimensions_maps_dimensions_to_concepts
   validate :data_attributes_maps_to_concepts
+  validate :measures_maps_to_concepts
 
   def dimensions_maps_dimensions_to_concepts
     dimensions.each_pair do |key, value|
@@ -40,6 +41,17 @@ class Dataset
     end
   end
 
+  def measures_maps_to_concepts
+    measures.each_pair do |key, value|
+      if Measure.find(key).nil?
+        errors.add(:measures, "Unknown measure")
+      end
+      if ConceptScheme.find(value).nil?
+        errors.add(:measures, "Unknown Concept Scheme")
+      end
+    end
+  end
+
   def has_field?(field_name)
     found_a_dimension = dimensions.map{|x| Dimension.find(x[0])}.any?{|x| x.name == field_name}
     return found_a_dimension unless found_a_dimension == false
@@ -50,7 +62,7 @@ class Dataset
     end
 
     if !measures.nil?
-      found_an_measure = measures.where(name: field_name).first
+      found_an_measure = measures.map{|x| Measure.find(x[0])}.any?{|x| x.name == field_name}
       return found_an_measure
     end
   end
