@@ -83,6 +83,36 @@ FactoryGirl.define do
       },
       "2013NOV" => {
         "title" => "November 2013"
+      },
+      "2014" => {
+        "title" => "2012",
+        "type" => "year",
+        "previous" => [
+          {
+            "period" => "year",
+            "value" => "2013"
+          }
+        ]
+      },
+      "2013" => {
+        "title" => "2013",
+        "type" => "year",
+        "previous" => [
+          {
+            "period" => "year",
+            "value" => "2012"
+          }
+        ]
+      },
+      "2012" => {
+        "title" => "2012",
+        "type" => "year",
+        "previous" => [
+          {
+            "period" => "year",
+            "value" => "2011"
+          }
+        ]
       }
       }}
   end
