@@ -41,4 +41,20 @@ class Observation
     Observation.where(where_clause.to_h)
   end
 
+  def get_date_slice(date_dimension_name, matching_dimensions)
+    raise ArgumentError.new(
+      'Date dimension must be included in matching dimensions'
+    ) unless matching_dimensions.has_key?date_dimension_name.to_sym
+
+    date_concept_scheme = dataset.concept_scheme_for_dimension(date_dimension_name)
+    scheme = date_concept_scheme.values[matching_dimensions[date_dimension_name.to_sym]]
+    date_range = date_concept_scheme.values.map do |value_key, structure|
+      if structure["type"] == scheme["type"]
+        value_key
+      end
+    end
+    matching_dimensions.delete(date_dimension_name.to_sym)
+    Observation.where(matching_dimensions).in({date_dimension_name => date_range})
+  end
+
 end

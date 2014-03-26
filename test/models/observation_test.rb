@@ -78,6 +78,7 @@ class ObservationTest < ActiveSupport::TestCase
       results = observation.get_all_with(["product"])
       assert_equal results.count, 2
     end
+
     should "find only observations within this dataset" do
       observation = FactoryGirl.create(:observation, {price_index: 60.5, product: "MC6A", date: "2014JAN"})
       observation_dec = FactoryGirl.create(:observation, {price_index: 111.6, product: "MC6A", date: "2013DEC"})
@@ -87,5 +88,37 @@ class ObservationTest < ActiveSupport::TestCase
       assert_equal results.count, 1
     end
 
+    should "find all observations for a specific time dimension slice" do
+      price_index = 60.5
+      years = ["2014", "2013", "2012"]
+      dataset = nil
+      observation = nil
+      years.each do |year|
+        if dataset.nil?
+          observation = FactoryGirl.create(:observation, {
+            price_index: price_index,
+            product: "MC6A",
+            date: "#{year}"})
+          dataset = observation.dataset
+        else
+          FactoryGirl.create(:observation, {
+            dataset: dataset,
+            price_index: price_index,
+            product: "MC6A",
+            date: "#{year}"})
+        end
+        price_index + 10
+      end
+
+      # create an observation that shouldn't be returned in our time slice
+      # the date value has a type of month
+      FactoryGirl.create(:observation, {dataset: dataset, product: "MC6A", date: "2014JAN"})
+
+      results = observation.get_date_slice("date", {product: "MC6A", date: "2014"})
+      assert_equal results.count, 3
+      results.each do |result|
+        assert years.include?(result.date)
+      end
+    end
   end
 end
