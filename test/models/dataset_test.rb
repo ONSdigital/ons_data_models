@@ -46,6 +46,14 @@ class DatasetTest < ActiveSupport::TestCase
       dataset = FactoryGirl.create(:dataset)
       assert dataset.has_field?("price_index")
     end
+
+    should "return a list of dimension names available" do
+      dataset = FactoryGirl.create(:dataset)
+      allowed_dimensions = ["product", "date", "place"]
+      dataset.available_dimension_names.map do |name|
+        assert allowed_dimensions.include?(name) == true
+      end
+    end
   end
 
   context "a dataset with many observations" do

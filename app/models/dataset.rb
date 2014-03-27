@@ -16,6 +16,10 @@ class Dataset
   validate :data_attributes_maps_to_concepts
   validate :measures_maps_to_concepts
 
+  def available_dimension_names
+    Dimension.find(dimensions.keys).map { |d| d.name }
+  end
+
   def dimensions_maps_dimensions_to_concepts
     dimensions.each_pair do |key, value|
       if Dimension.find(key).nil?
