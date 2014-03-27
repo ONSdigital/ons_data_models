@@ -47,4 +47,76 @@ class DatasetTest < ActiveSupport::TestCase
       assert dataset.has_field?("price_index")
     end
   end
+
+  context "a dataset with many observations" do
+    should "find all observations across a product dimension" do
+      observation = FactoryGirl.create(:observation, {
+        price_index: 60.5,
+        product: "MC6A",
+        date: "2014JAN"}
+      )
+      dataset = observation.dataset
+      observation_dec = FactoryGirl.create(:observation, {
+        dataset: dataset,
+        price_index: 111.6,
+        product: "MC6A", date: "2013DEC"}
+      )
+
+      results = dataset.get_all_observations_with({product: "MC6A"})
+      assert_equal results.count, 2
+      results.each do |result|
+        assert_equal result.product, "MC6A"
+      end
+    end
+
+    should "only return observations from within this dataset" do
+      observation = FactoryGirl.create(:observation, {
+        price_index: 60.5,
+        product: "MC6A",
+        date: "2014JAN"}
+      )
+      dataset = observation.dataset
+      observation_dec = FactoryGirl.create(:observation, {
+        price_index: 111.6,
+        product: "MC6A",
+        date: "2013DEC"}
+      )
+      results = dataset.get_all_observations_with({product: "MC6A"})
+      assert_equal results.count, 1
+      assert_equal results[0].dataset, dataset
+    end
+
+    should "find all observations for a specific time dimension slice" do
+      price_index = 60.5
+      years = ["2014", "2013", "2012"]
+      dataset = nil
+      observation = nil
+      years.each do |year|
+        if dataset.nil?
+          observation = FactoryGirl.create(:observation, {
+            price_index: price_index,
+            product: "MC6A",
+            date: "#{year}"})
+          dataset = observation.dataset
+        else
+          FactoryGirl.create(:observation, {
+            dataset: dataset,
+            price_index: price_index,
+            product: "MC6A",
+            date: "#{year}"})
+        end
+        price_index + 10
+      end
+
+      # create an observation that shouldn't be returned in our time slice
+      # the date value has a type of month
+      FactoryGirl.create(:observation, {dataset: dataset, product: "MC6A", date: "2014JAN"})
+
+      results = dataset.get_a_slice_by_date("date", {product: "MC6A", date: "2014"})
+      assert_equal results.count, 3
+      results.each do |result|
+        assert years.include?(result.date)
+      end
+    end
+  end
 end
