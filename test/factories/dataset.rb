@@ -23,12 +23,12 @@ FactoryGirl.define do
         }
       )
       dataset.dimensions = {
-        dimension.id => concept_scheme.id,
-        date_dimension.id => date_concept_scheme.id,
-        product_dimension.id => product_concept_scheme.id
+        dimension.id.to_s => concept_scheme.id,
+        date_dimension.id.to_s => date_concept_scheme.id,
+        product_dimension.id.to_s => product_concept_scheme.id
       }
-      dataset.data_attributes = {data_attribute.id => concept_scheme_2.id}
-      dataset.measures = [ measure.id ]
+      dataset.data_attributes = {data_attribute.id.to_s => concept_scheme_2.id}
+      dataset.measures = [ measure.id.to_s ]
     end
   end
 

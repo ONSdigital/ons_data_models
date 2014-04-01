@@ -70,12 +70,12 @@ class Dataset
 
   def concept_scheme_for_dimension(dimension_name)
     dimension = dimensions.map{|x| Dimension.find(x[0])}.find{|x| x.name == dimension_name}
-    ConceptScheme.find(dimensions[dimension.id])
+    ConceptScheme.find(dimensions[dimension.id.to_s])
   end
 
   def concept_scheme_for_attribute(attribute_name)
     data_attribute = data_attributes.map{ |x| DataAttribute.find(x[0]) }.find{|x| x.name == attribute_name}
-    ConceptScheme.find(data_attributes[data_attribute.id])
+    ConceptScheme.find(data_attributes[data_attribute.id.to_s])
   end
 
   def get_all_observations_with(matching_dimensions)
