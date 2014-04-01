@@ -70,7 +70,7 @@ class DatasetTest < ActiveSupport::TestCase
         product: "MC6A", date: "2013DEC"}
       )
 
-      results = dataset.get_all_observations_with({product: "MC6A"})
+      results = dataset.slice({product: "MC6A"})
       assert_equal results.count, 2
       results.each do |result|
         assert_equal result.product, "MC6A"
@@ -89,7 +89,7 @@ class DatasetTest < ActiveSupport::TestCase
         product: "MC6A",
         date: "2013DEC"}
       )
-      results = dataset.get_all_observations_with({product: "MC6A"})
+      results = dataset.slice({product: "MC6A"})
       assert_equal results.count, 1
       assert_equal results[0].dataset, dataset
     end
@@ -120,11 +120,110 @@ class DatasetTest < ActiveSupport::TestCase
       # the date value has a type of month
       FactoryGirl.create(:observation, {dataset: dataset, product: "MC6A", date: "2014JAN"})
 
-      results = dataset.get_a_slice_by_date("date", {product: "MC6A", date: "2014"})
+      #wildcard means "all top level items"
+      results = dataset.slice({product: "MC6A", date: "*"} )
       assert_equal results.count, 3
       results.each do |result|
         assert years.include?(result.date)
       end
     end
+    
+    should "perform simple slice query" do
+      dataset = FactoryGirl.create(:dataset)
+      observation_dec = FactoryGirl.create(:observation, {
+        dataset: dataset,
+        price_index: 111.6,
+        product: "MC6A",
+        date: "2013DEC"}
+      )
+      observation_dec = FactoryGirl.create(:observation, {
+        dataset: dataset,
+        price_index: 99,
+        product: "MC6A",
+        date: "2013"}
+      )
+      observations = dataset.slice( { product: "MC6A", date: "2013DEC"} )
+      assert_equal observations.count, 1
+      assert_equal observations.first.price_index, 111.6
+    end
+    
+    should "slice by single dimension" do
+      dataset = FactoryGirl.create(:dataset)
+      observation_dec = FactoryGirl.create(:observation, {
+        dataset: dataset,
+        price_index: 111.6,
+        product: "MC6A",
+        date: "2013DEC"}
+      )
+      observation_dec = FactoryGirl.create(:observation, {
+        dataset: dataset,
+        price_index: 99,
+        product: "MC6A",
+        date: "2013"}
+      )
+      observation_dec = FactoryGirl.create(:observation, {
+        dataset: dataset,
+        price_index: 66,
+        product: "JU5C",
+        date: "2013DEC"}
+      )
+      observations = dataset.slice( { date: "2013DEC"} )
+      assert_equal observations.count, 2
+      assert_equal observations.first.price_index, 111.6
+      assert_equal observations[1].price_index, 66
+    end    
+          
+    should "allow wildcarding for schemes with nested values" do
+      dataset = FactoryGirl.create(:dataset)
+      observation_dec = FactoryGirl.create(:observation, {
+        dataset: dataset,
+        price_index: 111.6,
+        product: "MC6A",
+        date: "2013DEC"}
+      )
+      observation_dec = FactoryGirl.create(:observation, {
+        dataset: dataset,
+        price_index: 99,
+        product: "MC6A",
+        date: "2013"}
+      )
+      observation_dec = FactoryGirl.create(:observation, {
+        dataset: dataset,
+        price_index: 66,
+        product: "JU5C",
+        date: "2013DEC"}
+      )
+      #should match the two month based observations, as these are narrower than 2013
+      observations = dataset.slice( { date: "2013/*"} )
+      assert_equal observations.count, 2
+      assert_equal observations.first.price_index, 111.6
+      assert_equal observations[1].price_index, 66
+    end  
+      
+    should "allow wildcarding for schemes with arbitrary nested values" do
+      dataset = FactoryGirl.create(:dataset)
+      observation_dec = FactoryGirl.create(:observation, {
+        dataset: dataset,
+        price_index: 111.6,
+        product: "MC6A",
+        date: "2014JAN"}
+      )
+      observation_dec = FactoryGirl.create(:observation, {
+        dataset: dataset,
+        price_index: 66,
+        product: "JU5C",
+        date: "2013DEC"}
+      )
+      observation_dec = FactoryGirl.create(:observation, {
+        dataset: dataset,
+        price_index: 66,
+        product: "MC6A",
+        date: "2014Q1"}
+      )
+      #should match the month which is in 2014, ignoring the quarter
+      observations = dataset.slice( { date: "2014/*"}, "month" )
+      assert_equal observations.count, 1
+      assert_equal observations.first.price_index, 111.6
+    end        
   end
 end

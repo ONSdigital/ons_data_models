@@ -70,12 +70,12 @@ class Dataset
 
   def concept_scheme_for_dimension(dimension_name)
     dimension = dimensions.map{|x| Dimension.find(x[0])}.find{|x| x.name == dimension_name}
-    ConceptScheme.find(dimensions[dimension.id])
+    ConceptScheme.find(dimensions[dimension.id.to_s])
   end
 
   def concept_scheme_for_attribute(attribute_name)
     data_attribute = data_attributes.map{ |x| DataAttribute.find(x[0]) }.find{|x| x.name == attribute_name}
-    ConceptScheme.find(data_attributes[data_attribute.id])
+    ConceptScheme.find(data_attributes[data_attribute.id.to_s])
   end
 
   def get_all_observations_with(matching_dimensions)
@@ -100,4 +100,45 @@ class Dataset
     matching_dimensions["dataset"] = self
     Observation.where(matching_dimensions).in({date_dimension_name => date_range})
   end
+   
+  def slice(query, value_type=nil)
+    raise ArgumentError.new("Argument must be a hash of dimensions") unless query.is_a?Hash
+    
+    mongo_query = {dataset: self}
+    selector = {}
+      
+    query.each do |dimension_name,query_value|
+      if query_value == "*"
+        scheme = concept_scheme_for_dimension(dimension_name.to_s)
+        range = Set.new
+        scheme.values.each do |value_key, structure|
+          range << value_key if !structure["broader"] && (value_type == nil || value_type == structure["type"] )
+        end
+        selector = {dimension_name => range.to_a}
+      elsif query_value.end_with?("/*")
+        parent = query_value.split("/").first
+        scheme = concept_scheme_for_dimension(dimension_name.to_s)
+        range = Set.new
+        scheme.values.each do |value_key, structure|
+          structure["broader"].each do |rel|
+            if rel["value"] == parent && (value_type == nil || value_type == structure["type"] )
+              range << value_key
+            end   
+          end if structure["broader"]          
+        end
+        selector = {dimension_name => range.to_a}
+      else
+        mongo_query[dimension_name] = query_value
+      end
+    end
+
+    if selector.empty?
+      Observation.where(mongo_query)
+    else
+      Observation.where(mongo_query).in(selector)
+    end
+  end
+      
+  private
+  
 end

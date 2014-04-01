@@ -23,12 +23,12 @@ FactoryGirl.define do
         }
       )
       dataset.dimensions = {
-        dimension.id => concept_scheme.id,
-        date_dimension.id => date_concept_scheme.id,
-        product_dimension.id => product_concept_scheme.id
+        dimension.id.to_s => concept_scheme.id,
+        date_dimension.id.to_s => date_concept_scheme.id,
+        product_dimension.id.to_s => product_concept_scheme.id
       }
-      dataset.data_attributes = {data_attribute.id => concept_scheme_2.id}
-      dataset.measures = [ measure.id ]
+      dataset.data_attributes = {data_attribute.id.to_s => concept_scheme_2.id}
+      dataset.measures = [ measure.id.to_s ]
     end
   end
 
@@ -64,32 +64,13 @@ FactoryGirl.define do
     sequence(:slug) { |s| "date-concept-scheme-#{s}"}
     title "Reporting periods"
     values {{
-      "2014JAN" => {
-        "title" => "January 2014",
-        "previous" => [
-          {
-            "period" => "month",
-            "value" => "2013DEC"
-          },
-          {
-            "period" => "year",
-            "value" => "2013JAN"
-          }
-        ]
-      },
-      "2013DEC" => {
-        "title" => "December 2013"
-      },
-      "2013NOV" => {
-        "title" => "November 2013"
-      },
-      "2014" => {
+      "2012" => {
         "title" => "2012",
         "type" => "year",
         "previous" => [
           {
             "period" => "year",
-            "value" => "2013"
+            "value" => "2011"
           }
         ]
       },
@@ -101,18 +82,93 @@ FactoryGirl.define do
             "period" => "year",
             "value" => "2012"
           }
+        ],
+        "narrower" => [
+          {
+            "period" => "month",
+            "value" => "2013DEC"
+          },
+          {
+            "period" => "month",
+            "value" => "2013NOV"
+          }
         ]
-      },
-      "2012" => {
-        "title" => "2012",
+      },   
+      "2014" => {
+        "title" => "2014",
         "type" => "year",
         "previous" => [
           {
             "period" => "year",
-            "value" => "2011"
+            "value" => "2013"
+          }],
+          "narrower" => [
+            {
+              "period" => "quarter",
+              "value" => "2014Q1"
+            }
+          ]
+      },             
+      "2014Q1" => {
+        "title" => "Q1 2014",
+        "type" => "quarter",
+        "narrower" => [
+          {
+            "period" => "month",
+            "value" => "2014JAN"
+          }
+        ],
+        "broader" => [
+          {
+            "period" => "year",
+            "value" => "2014"
           }
         ]
-      }
+      },
+      "2014JAN" => {
+        "title" => "January 2014",
+        "type" => "month",
+        "previous" => [
+          {
+            "period" => "month",
+            "value" => "2013DEC"
+          },
+          {
+            "period" => "year",
+            "value" => "2013JAN"
+          }
+        ],
+        "broader" => [
+          {
+            "period" => "year",
+            "value" => "2014"
+          },
+          {
+            "period" => "quarter",
+            "value" => "2014Q1"
+          }
+        ] 
+      },
+      "2013DEC" => {
+        "title" => "December 2013",
+        "type" => "month",
+        "broader" => [
+          {
+            "period" => "year",
+            "value" => "2013"
+          }
+        ]
+      },
+      "2013NOV" => {
+        "title" => "November 2013",
+        "type" => "month",
+        "broader" => [
+          {
+            "period" => "year",
+            "value" => "2013"
+          }
+        ]
+      }      
       }}
   end
 
