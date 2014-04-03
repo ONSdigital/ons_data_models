@@ -72,6 +72,16 @@ FactoryGirl.define do
             "period" => "year",
             "value" => "2011"
           }
+        ],
+        "narrower" => [
+          {
+            "period" => "month",
+            "value" => "2012DEC"
+          },
+          {
+            "period" => "month",
+            "value" => "2012NOV"
+          }
         ]
       },
       "2013" => {

@@ -94,7 +94,7 @@ class DatasetTest < ActiveSupport::TestCase
       assert_equal results[0].dataset, dataset
     end
 
-    should "find all observations for a specific time dimension slice" do
+    should "find all observations for top-level items in a time dimension slice" do
       price_index = 60.5
       years = ["2014", "2013", "2012"]
       dataset = nil
@@ -127,6 +127,37 @@ class DatasetTest < ActiveSupport::TestCase
         assert years.include?(result.date)
       end
     end
+    
+    should "find all observations with most granular time period when date is unspecified" do
+      price_index = 60.5
+      years = ["2014", "2013", "2012"]
+      dataset = nil
+      observation = nil
+      years.each do |year|
+        if dataset.nil?
+          observation = FactoryGirl.create(:observation, {
+            price_index: price_index,
+            product: "MC6A",
+            date: "#{year}"})
+          dataset = observation.dataset
+        else
+          FactoryGirl.create(:observation, {
+            dataset: dataset,
+            price_index: price_index,
+            product: "MC6A",
+            date: "#{year}"})
+        end
+        price_index + 10
+      end
+    
+      # create an observation that shouldbe returned in our time slice
+      # the date value has a type of month
+      FactoryGirl.create(:observation, {dataset: dataset, product: "MC6A", date: "2014JAN"})
+    
+      #date dimension is not specified so results should be single observation, ignoring the years
+      results = dataset.slice({product: "MC6A"} )
+      assert_equal results.count, 1
+    end    
     
     should "perform simple slice query" do
       dataset = FactoryGirl.create(:dataset)
