@@ -112,7 +112,7 @@ class Dataset
         scheme = concept_scheme_for_dimension(dimension_name.to_s)
         range = Set.new
         scheme.values.each do |value_key, structure|
-          range << value_key if !structure["broader"] && (value_type == nil || value_type == structure["type"] )
+          range << value_key if !structure["broader"]
         end
         selector = {dimension_name => range.to_a}
       elsif query_value.end_with?("/*")
@@ -132,6 +132,18 @@ class Dataset
       end
     end
 
+    #if a dimension isn't included, then add a selector which uses the granular items from 
+    #its concept scheme. For the date dimension this means months. For product this will
+    #mean all products
+    #We'll hard-code this for now and then improve it
+    if !query.has_key?(:date)
+      date_scheme = concept_scheme_for_dimension("date")
+      selector["date"] = []
+      date_scheme.values.each do |value_key, structure|
+        selector["date"] << value_key unless structure.has_key?("narrower")
+      end
+    end
+    
     if selector.empty?
       Observation.where(mongo_query)
     else
